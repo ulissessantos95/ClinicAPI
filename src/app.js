@@ -33,4 +33,26 @@ app.get("/usuarios/:id", async (request, response)=>{
     }
 } )
 
-app.listen(3000, ()=> console.log("Api rodando"))
+app.post("/usuarios", async(req, res)=> {
+    try {
+      const { body } = req
+      const usuario = await prismaClient.usuario.create({
+        data: {
+          nome: body.nome,
+          cargo: body.cargo,
+          email: body.email,
+          senha: body.senha
+        },
+      })
+      return res.status(201).json(usuario)
+    } catch (error) {
+      console.error(error)
+      if(error.code === "P2002"){
+        res.status(404).send("Falha ao cadastrar usuário: Email já cadastrado!")
+      }
+    }
+  })
+
+
+
+app.listen(3000, ()=> console.log("Api rodando do Ulisses"))
